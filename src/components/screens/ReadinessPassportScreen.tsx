@@ -13,6 +13,7 @@ import {
 import { computeReadinessProfile } from '../../engine/scoringEngine';
 import { TradingStyle } from '../../engine/types';
 import { useGameStore } from '../../store/useGameStore';
+import { LegalFooter } from '../common/BrandShell';
 import { playUiTick } from '../../utils/soundHaptics';
 
 const PRE_MARKET_CHECKLIST = [
@@ -433,6 +434,8 @@ export const ReadinessPassportScreen: React.FC = () => {
           </button>
         </div>
       </section>
+
+      <LegalFooter />
     </div>
   );
 };

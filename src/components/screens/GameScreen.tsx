@@ -879,7 +879,7 @@ export const GameScreen: React.FC = () => {
       {/* =================================================================== */}
       {/* TOP TACTICAL HUD                                                    */}
       {/* =================================================================== */}
-      <header className="shrink-0 px-3 py-2 bg-[#0B111E] border-b border-slate-800/90 flex items-center justify-between gap-2">
+      <header className="shrink-0 px-3 pt-[max(0.5rem,env(safe-area-inset-top))] pb-2 bg-[#0B111E] border-b border-slate-800/90 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <button
             type="button"

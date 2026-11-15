@@ -20,6 +20,7 @@ import {
   simulateCompoundingComparison,
 } from '../../engine/riskMasterEngine';
 import { useGameStore } from '../../store/useGameStore';
+import { LegalFooter } from '../common/BrandShell';
 import { playUiTick } from '../../utils/soundHaptics';
 
 type SubTab = 'DOCTRINE' | 'MNQ_CALC' | 'CRYPTO_CALC' | 'SCALING';
@@ -1134,6 +1135,8 @@ export const RiskMasterScreen: React.FC = () => {
           </section>
         </div>
       )}
+
+      <LegalFooter />
     </div>
   );
 };

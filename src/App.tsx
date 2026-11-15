@@ -6,6 +6,7 @@ import { DrillGymScreen } from './components/screens/DrillGymScreen';
 import { RiskMasterScreen } from './components/screens/RiskMasterScreen';
 import { ReadinessPassportScreen } from './components/screens/ReadinessPassportScreen';
 import { GameScreen } from './components/screens/GameScreen';
+import { TopBrandBar } from './components/common/BrandShell';
 import { playUiTick } from './utils/soundHaptics';
 
 export const App: React.FC = () => {
@@ -24,6 +25,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[100dvh] w-full bg-[#070B12] text-slate-100 overflow-hidden">
+      {/* Persistent Brand Bar on Menu Screens */}
+      <TopBrandBar />
+
       {/* Screen Router */}
       {activeTab === 'CAMPAIGN' && <CampaignMapScreen />}
       {activeTab === 'GYM' && <DrillGymScreen />}

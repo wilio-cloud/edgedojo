@@ -23,6 +23,7 @@ import {
 } from '../../store/useGameStore';
 import { MicroLesson, Scenario } from '../../engine/types';
 import { LessonModal } from '../modals/LessonModal';
+import { LegalFooter } from '../common/BrandShell';
 import { playUiTick } from '../../utils/soundHaptics';
 
 function modeBadgeInfo(mode: Scenario['mode']) {
@@ -353,6 +354,8 @@ export const CampaignMapScreen: React.FC = () => {
           );
         })}
       </div>
+
+      <LegalFooter />
 
       {activeLesson && (() => {
         const lessonWorld = CAMPAIGN_WORLDS.find(

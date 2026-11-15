@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { REAL_MARKET_PACKS } from '../../data/curatedScenarios';
 import { useGameStore } from '../../store/useGameStore';
+import { LegalFooter } from '../common/BrandShell';
 import { playUiTick } from '../../utils/soundHaptics';
 
 export const DrillGymScreen: React.FC = () => {
@@ -201,6 +202,8 @@ export const DrillGymScreen: React.FC = () => {
           </p>
         </div>
       </div>
+
+      <LegalFooter />
     </div>
   );
 };
