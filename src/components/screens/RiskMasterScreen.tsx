@@ -248,10 +248,12 @@ export const RiskMasterScreen: React.FC = () => {
                 </p>
                 <p className="text-[11.5px] text-cyan-200 bg-cyan-950/40 border border-cyan-500/30 p-2 rounded-lg leading-snug">
                   <strong>Trampa Comptes de Fondeig (Prop Firms):</strong> En un compte de
-                  50.000$ amb 2.500$ de <em>Trailing Drawdown</em>, el teu capital real és{' '}
+                  50.000$ amb 2.500$ de <em>Drawdown</em>, el teu capital real és{' '}
                   <strong>2.500$</strong>! Arrisca el <strong>4%–6% del coixí</strong>{' '}
-                  (100$–150$ = 2–3 lots MNQ), mai el 2% de 50k (1.000$ et cremaria en 2
-                  trades!).
+                  (100$–150$ = 2–3 lots MNQ), mai el 2% de 50k (1.000$). I vigila si és{' '}
+                  <strong>Intraday Trailing</strong> (persegueix el guany flotant tick a
+                  tick: cal cobrar parcials!) o <strong>EOD</strong> (s’actualitza al
+                  tancament de les 22:00h).
                 </p>
               </div>
 

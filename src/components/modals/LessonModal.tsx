@@ -13,6 +13,7 @@ interface LessonModalProps {
   lesson: MicroLesson;
   onClose: () => void;
   onComplete: () => void;
+  actionLabel?: string;
 }
 
 const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
@@ -25,6 +26,20 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
           viewBox="0 0 360 130"
           className="w-full h-32 bg-slate-950/80 rounded-xl border border-slate-800 p-2"
         >
+          {/* FVG / Discount highlight zone */}
+          <rect
+            x="118"
+            y="45"
+            width="68"
+            height="20"
+            rx="3"
+            fill="rgba(56,189,248,0.13)"
+            stroke="rgba(56,189,248,0.4)"
+            strokeDasharray="3 2"
+          />
+          <text x="123" y="58" fill="#7DD3FC" fontSize="8.5" fontWeight="bold">
+            FVG (&lt;50%)
+          </text>
           <polyline
             fill="none"
             stroke="#10B981"
@@ -45,11 +60,11 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             stroke="#34D399"
             strokeDasharray="4 3"
           />
-          <text x="95" y="60" fill="#34D399" fontSize="10" fontWeight="bold">
+          <text x="82" y="59" fill="#34D399" fontSize="10" fontWeight="bold">
             BOS ▲
           </text>
           <circle cx="195" cy="58" r="4.5" fill="#38BDF8" />
-          <text x="165" y="74" fill="#38BDF8" fontSize="9.5" fontWeight="bold">
+          <text x="165" y="79" fill="#38BDF8" fontSize="9.5" fontWeight="bold">
             HL Protegit
           </text>
           <line
@@ -60,7 +75,7 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             stroke="#F43F5E"
             strokeDasharray="4 3"
           />
-          <text x="232" y="72" fill="#F43F5E" fontSize="10" fontWeight="bold">
+          <text x="235" y="53" fill="#F43F5E" fontSize="10" fontWeight="bold">
             CHoCH ▼
           </text>
         </svg>
@@ -80,8 +95,8 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             strokeWidth="1.8"
             strokeDasharray="5 4"
           />
-          <text x="40" y="36" fill="#F59E0B" fontSize="10" fontWeight="bold">
-            Equal Highs = Stops Retail (BSL $$$)
+          <text x="36" y="35" fill="#F59E0B" fontSize="10" fontWeight="bold">
+            Equal Highs = BSL (Stops Retail $$$)
           </text>
           <polyline
             fill="none"
@@ -98,8 +113,8 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             strokeWidth="3"
           />
           <rect x="245" y="48" width="14" height="24" rx="2" fill="#F43F5E" />
-          <text x="264" y="24" fill="#FCA5A5" fontSize="9.5" fontWeight="bold">
-            Sweep (Trampa!)
+          <text x="263" y="24" fill="#FCA5A5" fontSize="9.5" fontWeight="bold">
+            Sweep + Reclaim!
           </text>
           <polyline
             fill="none"
@@ -134,17 +149,26 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             rx="4"
           />
           <text
-            x="235"
-            y="54"
+            x="237"
+            y="48"
             textAnchor="middle"
             fill="#34D399"
-            fontSize="12"
+            fontSize="11.5"
             fontWeight="bold"
           >
-            BENEFICI +2.8R (TP)
+            OBJECTIU +2.8R (TP)
           </text>
           <text
-            x="235"
+            x="237"
+            y="64"
+            textAnchor="middle"
+            fill="#A7F3D0"
+            fontSize="9"
+          >
+            BE / Parcial 50% després del BOS
+          </text>
+          <text
+            x="237"
             y="102"
             textAnchor="middle"
             fill="#FDA4AF"
@@ -161,7 +185,7 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
           />
           <circle cx="112" cy="114" r="4" fill="#F59E0B" />
           <text x="35" y="122" fill="#F59E0B" fontSize="9.5">
-            Metxa Sweep
+            Invalidesa Sweep
           </text>
         </svg>
       );
@@ -240,7 +264,7 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             fontSize="10"
             fontWeight="bold"
           >
-            15:30h CET · Risc $82
+            15:30h CET · 1R = $82,6
           </text>
         </svg>
       );
@@ -259,8 +283,8 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             fill="rgba(139,92,246,0.22)"
             stroke="#8B5CF6"
           />
-          <text x="30" y="102" fill="#DDD6FE" fontSize="10" fontWeight="bold">
-            DEMANDA CRIPTO 4H / 1D + LIQUIDATION FLUSH
+          <text x="28" y="102" fill="#DDD6FE" fontSize="9.8" fontWeight="bold">
+            DEMANDA CRIPTO 4H/1D + LIQUIDATION FLUSH (SSL)
           </text>
           <polyline
             fill="none"
@@ -274,7 +298,7 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             strokeWidth="3"
             points="220,98 248,60 270,76 325,18"
           />
-          <text x="250" y="52" fill="#34D399" fontSize="10" fontWeight="bold">
+          <text x="246" y="52" fill="#34D399" fontSize="10" fontWeight="bold">
             CHoCH 1H (Gatell!)
           </text>
         </svg>
@@ -294,7 +318,7 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             strokeDasharray="4 4"
           />
           <text x="32" y="116" fill="#F43F5E" fontSize="9.5" fontWeight="bold">
-            Fre Step-Down (-5% DD → 0.5% Risc)
+            Fre Step-Down (-5% DD → 0.5% Risc) · Màx -2.5R/dia
           </text>
           <polyline
             fill="none"
@@ -303,13 +327,13 @@ const LessonDiagram: React.FC<{ type: MicroLesson['diagramType'] }> = ({
             points="28,78 75,60 115,72 165,44 205,55 265,26 330,16"
           />
           <text
-            x="175"
+            x="165"
             y="24"
             fill="#38BDF8"
             fontSize="10.5"
             fontWeight="bold"
           >
-            Escalat Compost Sostenible
+            Escalat Compost + Retirs 20%
           </text>
         </svg>
       );
@@ -320,6 +344,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({
   lesson,
   onClose,
   onComplete,
+  actionLabel = 'Entès · Passar a l’Acció',
 }) => {
   const [viewMode, setViewMode] = useState<'ESSENTIAL' | 'MASTER'>('ESSENTIAL');
 
@@ -333,7 +358,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({
             </div>
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-                Màster EdgeDojo · Lectura {lesson.readTimeSec}s
+                Màster EdgeDojo · Lectura ~{lesson.readTimeSec}s
               </span>
               <h2 className="text-base sm:text-lg font-bold text-white leading-tight">
                 {lesson.title}
@@ -343,6 +368,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({
           <button
             type="button"
             onClick={onClose}
+            aria-label="Tancar lliçó"
             className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
           >
             <X className="w-5 h-5" />
@@ -363,7 +389,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <BookOpen className="w-3.5 h-3.5" /> Regles Clau
+              <BookOpen className="w-3.5 h-3.5" /> Regles Clau ({lesson.keyRules.length})
             </button>
             <button
               type="button"
@@ -374,7 +400,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <GraduationCap className="w-3.5 h-3.5" /> Aprofundiment Màster
+              <GraduationCap className="w-3.5 h-3.5" /> Aprofundiment ({lesson.deepDiveSections.length})
             </button>
           </div>
         )}
@@ -436,7 +462,7 @@ export const LessonModal: React.FC<LessonModalProps> = ({
           }}
           className="mt-4 w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition"
         >
-          Entès · Passar a l’Acció
+          {actionLabel}
         </button>
       </div>
     </div>

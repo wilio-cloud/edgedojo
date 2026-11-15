@@ -530,23 +530,28 @@ export const TacticalChart: React.FC<TacticalChartProps> = ({
           const isZone =
             ann.kind === 'SUPPLY_ZONE' ||
             ann.kind === 'DEMAND_ZONE' ||
+            ann.kind === 'FVG' ||
             (ann.kind === 'SWEEP' && ann.priceBottom !== undefined);
           const stroke =
-            ann.tone === 'bull'
-              ? '#10B981'
-              : ann.tone === 'bear'
-                ? '#F43F5E'
-                : ann.tone === 'liquidity'
-                  ? '#F59E0B'
-                  : '#38BDF8';
+            ann.kind === 'FVG'
+              ? '#38BDF8'
+              : ann.tone === 'bull'
+                ? '#10B981'
+                : ann.tone === 'bear'
+                  ? '#F43F5E'
+                  : ann.tone === 'liquidity'
+                    ? '#F59E0B'
+                    : '#38BDF8';
           const fill =
-            ann.tone === 'bull'
-              ? 'rgba(16, 185, 129, 0.16)'
-              : ann.tone === 'bear'
-                ? 'rgba(244, 63, 94, 0.16)'
-                : ann.tone === 'liquidity'
-                  ? 'rgba(245, 158, 11, 0.15)'
-                  : 'rgba(56, 189, 248, 0.12)';
+            ann.kind === 'FVG'
+              ? 'rgba(56, 189, 248, 0.14)'
+              : ann.tone === 'bull'
+                ? 'rgba(16, 185, 129, 0.16)'
+                : ann.tone === 'bear'
+                  ? 'rgba(244, 63, 94, 0.16)'
+                  : ann.tone === 'liquidity'
+                    ? 'rgba(245, 158, 11, 0.15)'
+                    : 'rgba(56, 189, 248, 0.12)';
 
           if (isZone) {
             const boxH = Math.max(8, yBottom - yTop);
@@ -560,6 +565,7 @@ export const TacticalChart: React.FC<TacticalChartProps> = ({
                   fill={fill}
                   stroke={stroke}
                   strokeWidth={1.3}
+                  strokeDasharray={ann.kind === 'FVG' ? '4 3' : undefined}
                   rx={3}
                 />
                 <text

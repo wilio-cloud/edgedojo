@@ -83,7 +83,7 @@ export function calculateMnqPositionSizing(
     advice =
       recommendedContracts >= 2
         ? `Dimensionament institucional òptim: amb ${recommendedContracts} contractes MNQ pots tancar ${Math.floor(recommendedContracts / 2)} al primer objectiu (+1.5R) i deixar córrer la resta sense estrès.`
-        : `Risc totalment sota control (1 contracte MNQ = ${actualDollarRiskUsd.toFixed(2)}$ incloent comissions). Fes creixer el coixí abans de pujar al 2n contracte.`;
+        : `Risc totalment sota control (1 contracte MNQ = ${actualDollarRiskUsd.toFixed(2)}$ incloent comissions). Fes créixer el coixí abans de pujar al 2n contracte.`;
   }
 
   return {

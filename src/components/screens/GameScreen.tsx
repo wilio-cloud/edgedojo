@@ -3,6 +3,7 @@ import {
   ArrowLeft,
   Award,
   Ban,
+  BookOpen,
   ChevronDown,
   ChevronRight,
   ChevronUp,
@@ -43,6 +44,8 @@ import {
 } from '../../engine/anonymizer';
 import { TacticalChart } from '../chart/TacticalChart';
 import { CAMPAIGN_SCENARIOS, generateGymDrillScenario } from '../../data/curatedScenarios';
+import { MICRO_LESSONS } from '../../data/lessons';
+import { LessonModal } from '../modals/LessonModal';
 import {
   calculateCryptoSwingSizing,
   calculateMnqPositionSizing,
@@ -63,13 +66,16 @@ export const GameScreen: React.FC = () => {
     gymModeFilter,
     soundEnabled,
     riskSettings,
+    completedLessons,
     setActiveTab,
     startCampaignStage,
     nextGymDrill,
     recordAttempt,
+    markLessonCompleted,
   } = useGameStore();
 
   const [retrySeed, setRetrySeed] = useState(0);
+  const [showLessonModal, setShowLessonModal] = useState(false);
 
   // Resolve and prepare active scenario (with anonymization on real historical charts)
   const scenario: Scenario = useMemo(() => {
@@ -168,6 +174,17 @@ export const GameScreen: React.FC = () => {
       plannedRRs: [],
       breachedDrawdown: false,
     });
+
+    // Auto-present the World Masterclass lesson when advancing directly into stage X.1
+    if (
+      scenario.id.endsWith('_s1') &&
+      scenario.worldId >= 1 &&
+      !useGameStore.getState().completedLessons.includes(scenario.worldId)
+    ) {
+      setShowLessonModal(true);
+    } else {
+      setShowLessonModal(false);
+    }
   }, [scenario]);
 
   // Timer for RADAR and timed SCALP EXECUTION stages
@@ -179,12 +196,13 @@ export const GameScreen: React.FC = () => {
         : undefined;
 
   useEffect(() => {
-    if (!timeLimitSec || evaluation || isAnimatingOutcome) return;
+    if (!timeLimitSec || evaluation || isAnimatingOutcome || showLessonModal)
+      return;
     const interval = setInterval(() => {
       setElapsedSec((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, [timeLimitSec, evaluation, isAnimatingOutcome]);
+  }, [timeLimitSec, evaluation, isAnimatingOutcome, showLessonModal]);
 
   // Outcome candle-by-candle reveal animation
   const animTimerRef = useRef<number | null>(null);
@@ -842,6 +860,20 @@ export const GameScreen: React.FC = () => {
   const remainingTime =
     timeLimitSec !== undefined ? Math.max(0, timeLimitSec - elapsedSec) : null;
 
+  const currentWorldLesson = useMemo(() => {
+    const targetWorldId =
+      scenario.worldId && scenario.worldId >= 1 && scenario.worldId <= 6
+        ? scenario.worldId
+        : scenario.style === 'SCALP'
+          ? 4
+          : scenario.style === 'SWING'
+            ? 5
+            : 1;
+    return (
+      MICRO_LESSONS.find((l) => l.worldId === targetWorldId) ?? MICRO_LESSONS[0]
+    );
+  }, [scenario.worldId, scenario.style]);
+
   return (
     <div className="flex flex-col h-[100dvh] w-full bg-[#070B12] text-slate-100 overflow-hidden">
       {/* =================================================================== */}
@@ -883,6 +915,21 @@ export const GameScreen: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
+          {/* In-game Masterclass Reference Button */}
+          <button
+            type="button"
+            onClick={() => {
+              playUiTick(soundEnabled);
+              setShowLessonModal(true);
+            }}
+            title="Consultar la lliçó del mòdul"
+            aria-label="Teoria del mòdul"
+            className="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-emerald-400 text-xs font-bold flex items-center gap-1 transition"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Teoria</span>
+          </button>
+
           {/* Timer Pill for Radar / Scalp */}
           {remainingTime !== null && !evaluation && (
             <div
@@ -1021,6 +1068,7 @@ export const GameScreen: React.FC = () => {
           onSelectRadarChoice={(id) => {
             playUiTick(soundEnabled);
             setSelectedChoiceId(id);
+            setTappedPrice(null);
           }}
           allowPriceTap={
             scenario.mode === 'RADAR' &&
@@ -1077,6 +1125,7 @@ export const GameScreen: React.FC = () => {
                       onClick={() => {
                         playUiTick(soundEnabled);
                         setSelectedChoiceId(ch.id);
+                        setTappedPrice(null);
                       }}
                       className={`text-left px-3 py-2 rounded-xl border transition flex items-center justify-between gap-2 ${
                         active
@@ -1311,6 +1360,14 @@ export const GameScreen: React.FC = () => {
           ) : (
             /* ---------------- REPLAY EXAM DECK ---------------- */
             <div className="space-y-2">
+              {replayIndex === 0 &&
+                !draftOrder &&
+                !replayActiveOrder &&
+                scenario.replayExamConfig?.briefing && (
+                  <p className="text-[11px] text-slate-300 bg-slate-900/90 border border-slate-800 rounded-xl px-2.5 py-1.5 leading-snug">
+                    {scenario.replayExamConfig.briefing}
+                  </p>
+                )}
               {/* Playback transport controls */}
               <div className="flex items-center justify-between gap-1.5">
                 <div className="flex items-center gap-1.5">
@@ -1582,6 +1639,21 @@ export const GameScreen: React.FC = () => {
             )}
           </div>
         </div>
+      )}
+
+      {showLessonModal && (
+        <LessonModal
+          lesson={currentWorldLesson}
+          actionLabel={
+            completedLessons.includes(currentWorldLesson.worldId)
+              ? 'Tornar al Gràfic'
+              : 'Entès · Passar a l’Acció'
+          }
+          onClose={() => setShowLessonModal(false)}
+          onComplete={() => {
+            markLessonCompleted(currentWorldLesson.worldId);
+          }}
+        />
       )}
     </div>
   );

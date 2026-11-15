@@ -313,11 +313,60 @@ export function buildRealPackScenario(
           : undefined,
     };
   } else if (overrides.mode === 'MANAGEMENT') {
-    const dir = pack.dominantDirection;
+    // Determine true favorable direction & MFE peak index on futureCandles so checkpoints are 100% playable and fair
+    const upMove = (futMaxHigh - entry) / Math.max(atr, 1e-6);
+    const downMove = (entry - futMinLow) / Math.max(atr, 1e-6);
+    const dir: 'LONG' | 'SHORT' =
+      optimalSide !== 'SKIP'
+        ? optimalSide
+        : upMove >= downMove
+          ? 'LONG'
+          : 'SHORT';
+
+    // Find peak favorable candle index (at least candle 14 so both checkpoints fit cleanly before exit)
+    let peakIdx = Math.min(fut.length - 1, 24);
+    let bestFav = -Infinity;
+    for (let i = 8; i < fut.length; i++) {
+      const fav = dir === 'LONG' ? fut[i].high - entry : entry - fut[i].low;
+      if (fav > bestFav) {
+        bestFav = fav;
+        peakIdx = i;
+      }
+    }
+
+    const cp1Idx = Math.max(4, Math.min(10, Math.floor(peakIdx * 0.35)));
+    const cp2Idx = Math.max(
+      cp1Idx + 4,
+      Math.min(fut.length - 4, Math.max(12, Math.floor(peakIdx * 0.72)))
+    );
+
+    // Ensure structural SL sits safely outside early noise before Checkpoint 2 while remaining realistic
+    const preCp2Slice = fut.slice(0, cp2Idx);
+    const worstAdversePrice =
+      dir === 'LONG'
+        ? Math.min(...preCp2Slice.map((c) => c.low), entry - 1.1 * atr)
+        : Math.max(...preCp2Slice.map((c) => c.high), entry + 1.1 * atr);
+
     const mgmtSL =
-      dir === 'LONG' ? entry - 1.35 * atr : entry + 1.35 * atr;
-    const mgmtTP =
-      dir === 'LONG' ? entry + 2.9 * atr : entry - 2.9 * atr;
+      dir === 'LONG'
+        ? Math.min(entry - 1.2 * atr, worstAdversePrice - 0.2 * atr)
+        : Math.max(entry + 1.2 * atr, worstAdversePrice + 0.2 * atr);
+
+    const riskDist = Math.abs(entry - mgmtSL);
+
+    // Ensure TP sits beyond pre-Checkpoint-2 highs/lows so the player actively makes both Checkpoint 1 & 2 decisions
+    const maxFavBeforeCp2 =
+      dir === 'LONG'
+        ? Math.max(...preCp2Slice.map((c) => c.high)) - entry
+        : entry - Math.min(...preCp2Slice.map((c) => c.low));
+
+    const targetDist = Math.max(
+      2.2 * riskDist,
+      maxFavBeforeCp2 + 0.35 * atr,
+      Math.min(bestFav * 0.92, 3.4 * riskDist)
+    );
+    const mgmtTP = dir === 'LONG' ? entry + targetDist : entry - targetDist;
+
     baseScenario.managementConfig = {
       initialOrder: {
         side: dir,
@@ -325,28 +374,28 @@ export function buildRealPackScenario(
         stopLoss: mgmtSL,
         takeProfit: mgmtTP,
       },
-      contextSummary: `Estàs dins d'un ${dir} obert al tancament d'estructura. Gestiona l'evolució real espelma a espelma sense regalar l'avantatge.`,
+      contextSummary: `Estàs dins d’un ${dir} obert a estructura validada. Gestiona l’evolució real espelma a espelma sense escanyar el moviment abans d’hora.`,
       applyScalpFriction: pack.style === 'SCALP',
       checkpoints: [
         {
           id: `${overrides.id}_cp1`,
-          futureCandleCount: 10,
+          futureCandleCount: cp1Idx,
           prompt:
-            'Primer tram d’evolució completat. El preu respira i testeja la microestructura. Quina és la decisió disciplinada?',
+            'Primer tram d’evolució completat: el preu respira i re-testeja la microestructura sense trencar la teva invalidesa. Quina és la decisió disciplinada?',
           optimalActions: ['HOLD'],
           acceptableActions: ['PARTIAL_50'],
           coachingNote:
-            'Al primer impuls o respiració normal, moure a Break-Even massa ràpid sol treure’t per soroll just abans de l’expansió.',
+            'Durant la primera respiració sana abans del nou BOS, moure l’SL a Break-Even massa aviat sol treure’t per soroll just abans de l’expansió.',
         },
         {
           id: `${overrides.id}_cp2`,
-          futureCandleCount: 24,
+          futureCandleCount: cp2Idx,
           prompt:
-            'Segon tram completat: el moviment ja ha mostrat les seves cartes. Com gestiones el risc restant?',
+            'Segon tram completat: el desplaçament a favor ja és clar i s’acosta a zones de liquidesa. Com gestiones el risc restant?',
           optimalActions: ['PARTIAL_50', 'MOVE_BE'],
           acceptableActions: ['HOLD'],
           coachingNote:
-            'Quan el mercat ja s’ha desplaçat de forma significativa, protegir el risc a Break-Even o assegurar parcials blinda l’esperança matemàtica.',
+            'Quan el mercat ja s’ha desplaçat amb força i estructura nova, cobrar el 50% o protegir a Break-Even blinda l’operació amb risc zero.',
         },
       ],
     };
@@ -359,8 +408,8 @@ export function buildRealPackScenario(
       applyScalpFriction: pack.style === 'SCALP',
       briefing:
         pack.style === 'SCALP'
-          ? 'Sessió Scalp Real a Cegues: avança espelma a espelma, vigila el HTF, executa amb R:R >= 1.8 i no superis -3.5R de Drawdown.'
-          : 'Sessió Swing Multi-Timeframe Real: consulta el HTF, espera el moment d’asimetria clara i tanca la sessió per sobre de +1.8R.',
+          ? 'Sessió MNQ Scalp Real a Cegues: avança espelma a espelma, consulta l’HTF, executa amb R:R >= 1.8 i no superis -3.5R de Drawdown.'
+          : 'Sessió Cripto Swing Real a Cegues: consulta l’HTF, espera el moment d’asimetria clara i tanca la sessió per sobre de +1.8R.',
     };
   }
 

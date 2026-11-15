@@ -7,6 +7,7 @@ import {
 import {
   computeReadinessProfile,
   evaluateExecutionAttempt,
+  evaluateManagementAttempt,
   evaluateRadarAttempt,
 } from '../scoringEngine';
 import { prepareScenarioForPlay } from '../anonymizer';
@@ -207,11 +208,12 @@ describe('Campaign 36 Stages & 34 MNQ + Crypto Real Packs Integrity', () => {
         expect(correctChoice).toBeDefined();
         const res = evaluateRadarAttempt(scen, {
           selectedChoiceId: correctChoice!.id,
-          tappedPrice: scen.radarConfig!.priceTapTarget?.idealPrice,
-          elapsedSec: 6,
+          // Even if user accidentally tapped far away while panning, explicit choice wins
+          tappedPrice: scen.visibleCandles[0].low * 0.5,
+          elapsedSec: 5,
         });
         expect(res.passed).toBe(true);
-        expect(res.stars).toBeGreaterThanOrEqual(2);
+        expect(res.stars).toBe(3);
       }
 
       if (scen.mode === 'EXECUTION') {
@@ -232,7 +234,7 @@ describe('Campaign 36 Stages & 34 MNQ + Crypto Real Packs Integrity', () => {
           const res = evaluateExecutionAttempt(scen, {
             choseSkip: false,
             order: optimalOrder,
-            elapsedSec: 10,
+            elapsedSec: 8,
           });
           if (!res.passed) {
             throw new Error(
@@ -242,6 +244,110 @@ describe('Campaign 36 Stages & 34 MNQ + Crypto Real Packs Integrity', () => {
           expect(res.passed).toBe(true);
           expect(res.stars).toBeGreaterThanOrEqual(2);
         }
+      }
+
+      if (scen.mode === 'MANAGEMENT') {
+        const cfg = scen.managementConfig!;
+        expect(cfg).toBeDefined();
+        expect(cfg.checkpoints.length).toBeGreaterThanOrEqual(2);
+
+        const cp1 = cfg.checkpoints[0];
+        const cp2 = cfg.checkpoints[1];
+
+        // Segment 0 -> Checkpoint 1
+        const s1 = advanceManagedTrade(
+          cfg.initialOrder,
+          {
+            activeStopLoss: cfg.initialOrder.stopLoss,
+            remainingSize: 1.0,
+            realizedR: 0,
+            closed: false,
+            exitFutureIndex: 0,
+          },
+          scen.futureCandles.slice(0, cp1.futureCandleCount),
+          0,
+          scen.atr,
+          undefined,
+          undefined,
+          cfg.applyScalpFriction
+        );
+        if (s1.closed) {
+          throw new Error(
+            `Stage ${scen.id} closed prematurely BEFORE Checkpoint 1 (${s1.closeReason})!`
+          );
+        }
+        expect(s1.closed).toBe(false);
+
+        // Segment Checkpoint 1 -> Checkpoint 2 with optimal action
+        const act1 = cp1.optimalActions[0];
+        const mark1 = scen.futureCandles[cp1.futureCandleCount - 1].close;
+        const s2 = advanceManagedTrade(
+          cfg.initialOrder,
+          s1,
+          scen.futureCandles.slice(cp1.futureCandleCount, cp2.futureCandleCount),
+          cp1.futureCandleCount,
+          scen.atr,
+          act1,
+          mark1,
+          cfg.applyScalpFriction
+        );
+        if (s2.closed) {
+          throw new Error(
+            `Stage ${scen.id} closed prematurely BEFORE Checkpoint 2 (${s2.closeReason})!`
+          );
+        }
+        expect(s2.closed).toBe(false);
+
+        // Final Segment Checkpoint 2 -> End with optimal action
+        const act2 = cp2.optimalActions[0];
+        const mark2 = scen.futureCandles[cp2.futureCandleCount - 1].close;
+        const s3 = advanceManagedTrade(
+          cfg.initialOrder,
+          s2,
+          scen.futureCandles.slice(cp2.futureCandleCount),
+          cp2.futureCandleCount,
+          scen.atr,
+          act2,
+          mark2,
+          cfg.applyScalpFriction
+        );
+
+        let finalR = s3.realizedR;
+        if (!s3.closed && s3.remainingSize > 0) {
+          const lastC = scen.futureCandles[scen.futureCandles.length - 1];
+          const risk = Math.abs(
+            cfg.initialOrder.entry - cfg.initialOrder.stopLoss
+          );
+          const dir = cfg.initialOrder.side === 'LONG' ? 1 : -1;
+          const floatR = ((lastC.close - cfg.initialOrder.entry) * dir) / risk;
+          finalR = Math.round((finalR + s3.remainingSize * floatR) * 100) / 100;
+        }
+
+        const evalMgmt = evaluateManagementAttempt(
+          scen,
+          [
+            { checkpointId: cp1.id, action: act1 },
+            { checkpointId: cp2.id, action: act2 },
+          ],
+          finalR
+        );
+        if (!evalMgmt.passed || evalMgmt.stars < 3) {
+          throw new Error(
+            `Stage ${scen.id} management optimal path failed 3 stars! Score=${evalMgmt.totalScore}, stars=${evalMgmt.stars}, finalR=${finalR}`
+          );
+        }
+        expect(evalMgmt.passed).toBe(true);
+        expect(evalMgmt.stars).toBe(3);
+      }
+
+      if (scen.mode === 'REPLAY_EXAM') {
+        const rcfg = scen.replayExamConfig!;
+        expect(rcfg).toBeDefined();
+        expect(rcfg.briefing.length).toBeGreaterThan(20);
+        expect(scen.futureCandles.length).toBeGreaterThanOrEqual(30);
+        const hi = Math.max(...scen.futureCandles.map((c) => c.high));
+        const lo = Math.min(...scen.futureCandles.map((c) => c.low));
+        expect(hi - lo).toBeGreaterThanOrEqual(scen.atr * 5);
       }
     }
 

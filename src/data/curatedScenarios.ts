@@ -344,13 +344,23 @@ export const CAMPAIGN_SCENARIOS: Scenario[] = [
     ],
     xrayAnnotations: [
       {
-        id: 'w1s4_fvg',
+        id: 'w1s4_demand',
         kind: 'DEMAND_ZONE',
-        priceTop: 165.5,
-        priceBottom: 161.0,
-        startIndex: 33,
+        priceTop: 163.6,
+        priceBottom: 160.8,
+        startIndex: 32,
         endIndex: 56,
-        label: 'Desplaçament Institucional + Zona de Demanda/FVG',
+        label: 'Zona de Demanda d’Origen',
+        tone: 'bull',
+      },
+      {
+        id: 'w1s4_fvg',
+        kind: 'FVG',
+        priceTop: 168.4,
+        priceBottom: 163.8,
+        startIndex: 35,
+        endIndex: 56,
+        label: 'FVG Alcista (Buit de 3 Espelmes)',
         tone: 'bull',
       },
     ],
@@ -386,7 +396,7 @@ export const CAMPAIGN_SCENARIOS: Scenario[] = [
     worldId: 1,
     stageNumber: 5,
     title: '1.5 · La Picadora de Carn (Aprendre a dir NO)',
-    subtitle: 'El 70% de les pèrdues vénen d’operar al bell mig d’un rang brut',
+    subtitle: 'El 70% de les pèrdues venen d’operar al bell mig d’un rang brut',
     mode: 'EXECUTION',
     style: 'CORE',
     timeframe: '15m',
@@ -709,7 +719,7 @@ export const CAMPAIGN_SCENARIOS: Scenario[] = [
           chartAnchor: { candleIndex: 40, price: 303.0, badge: 'A' },
           isCorrect: false,
           feedback:
-            'Quan els rebots fan màxims decreixents (312 -> 309 -> 307 -> 304.5), les ordres compradors de 303 s’han esgotat.',
+            'Quan els rebots fan màxims decreixents (312 -> 309 -> 307 -> 304.5), les ordres compradores de 303 s’han esgotat.',
         },
       ],
     },
@@ -1008,7 +1018,7 @@ export const CAMPAIGN_SCENARIOS: Scenario[] = [
       },
     ],
     coachingTakeaway:
-      'Entrar després de la reclamació d’un Sweep a la base del rang et dóna un SL curt i un TP a l’altre extrem: així s’obtenen operacions de +2.5R a +3.5R.',
+      'Entrar després de la reclamació d’un Sweep a la base del rang et dona un SL curt i un TP a l’altre extrem: així s’obtenen operacions de +2.5R a +3.5R.',
     executionBlueprint: {
       optimalSide: 'LONG',
       invalidationPrice: 171.2,
@@ -1171,7 +1181,7 @@ export const CAMPAIGN_SCENARIOS: Scenario[] = [
           id: 'w3s5_cp1',
           futureCandleCount: 8,
           prompt:
-            'Portes +0.9R però encara NO s’ha trencat el màxim de 204.0 i comença un petit retroç. Què fas?',
+            'Portes +0.9R però encara NO s’ha trencat el màxim de 204.0 i comença un petit retrocés. Què fas?',
           optimalActions: ['HOLD'],
           acceptableActions: [],
           coachingNote:
@@ -1596,7 +1606,7 @@ export const CAMPAIGN_SCENARIOS: Scenario[] = [
     worldId: 6,
     stageNumber: 32,
     title: '6.2 · Prova Pro II: Altcoin Swing Institucional (4H / 1D)',
-    subtitle: 'Zero pistes. Lectura Top-Down i invalidesa exacta sobre Cripto real',
+    subtitle: 'Zero pistes en Cripto 4H/1D: executa si hi ha asimetria clara o prem NO OPERAR!',
     mode: 'EXECUTION',
     coachingTakeaway:
       'Quan combines paciència en Cripto 4H amb execució ràpida en MNQ, tens el millor dels dos mons: flux de caixa intradia + creixement patrimonial de swing.',

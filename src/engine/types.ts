@@ -18,6 +18,7 @@ export interface TacticalAnnotation {
   kind:
     | 'BOS'
     | 'CHOCH'
+    | 'FVG'
     | 'LIQUIDITY_POOL'
     | 'SWEEP'
     | 'SUPPLY_ZONE'

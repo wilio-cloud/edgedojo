@@ -57,6 +57,9 @@ export const CampaignMapScreen: React.FC = () => {
   } = useGameStore();
 
   const [activeLesson, setActiveLesson] = useState<MicroLesson | null>(null);
+  const [pendingStageAfterLesson, setPendingStageAfterLesson] = useState<
+    string | null
+  >(null);
 
   const totalStars = useMemo(
     () => getTotalStars(stageProgress),
@@ -80,6 +83,7 @@ export const CampaignMapScreen: React.FC = () => {
     if (isFirstOfWorld) {
       const lesson = MICRO_LESSONS.find((l) => l.worldId === worldId);
       if (lesson) {
+        setPendingStageAfterLesson(scen.id);
         setActiveLesson({ ...lesson, worldId });
         return;
       }
@@ -248,6 +252,7 @@ export const CampaignMapScreen: React.FC = () => {
                 type="button"
                 onClick={() => {
                   playUiTick(soundEnabled);
+                  setPendingStageAfterLesson(null);
                   setActiveLesson(lesson);
                 }}
                 className="mt-3 w-full px-3 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-700/70 flex items-center justify-between text-left transition"
@@ -255,7 +260,7 @@ export const CampaignMapScreen: React.FC = () => {
                 <div className="flex items-center gap-2 min-w-0">
                   <BookOpen className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span className="text-xs font-semibold text-slate-200 truncate">
-                    Teoria Ràpida ({lesson.readTimeSec}s): {lesson.title}
+                    Lliçó Màster (~{lesson.readTimeSec}s): {lesson.title}
                   </span>
                 </div>
                 {lessonDone ? (
@@ -267,7 +272,7 @@ export const CampaignMapScreen: React.FC = () => {
                 )}
               </button>
 
-              {/* 5 Stages List */}
+              {/* 6 Stages List */}
               <div className="mt-3 space-y-2">
                 {worldScenarios.map((scen) => {
                   const prog = stageProgress[scen.id];
@@ -279,7 +284,7 @@ export const CampaignMapScreen: React.FC = () => {
                       key={scen.id}
                       type="button"
                       disabled={!isUnlocked}
-                      onClick={() => startCampaignStage(scen.id)}
+                      onClick={() => handleStageClick(scen, world.id)}
                       className={`w-full text-left p-3 rounded-xl border flex items-center justify-between gap-3 transition ${
                         !isUnlocked
                           ? 'bg-slate-950/40 border-slate-900 cursor-not-allowed'
@@ -349,24 +354,45 @@ export const CampaignMapScreen: React.FC = () => {
         })}
       </div>
 
-      {activeLesson && (
-        <LessonModal
-          lesson={activeLesson}
-          onClose={() => setActiveLesson(null)}
-          onComplete={() => {
-            markLessonCompleted(activeLesson.worldId);
-            // If triggered from quick resume on first stage of world, keep flow smooth
-            const firstStage = CAMPAIGN_SCENARIOS.find(
-              (s) =>
-                s.worldId === activeLesson.worldId &&
-                !stageProgress[s.id]?.completed
-            );
-            if (firstStage && firstStage.id.endsWith('_s1')) {
-              startCampaignStage(firstStage.id);
+      {activeLesson && (() => {
+        const lessonWorld = CAMPAIGN_WORLDS.find(
+          (w) => w.id === activeLesson.worldId
+        );
+        const lessonWorldUnlocked =
+          unlockAllWorlds ||
+          totalStars >= (lessonWorld?.unlockRequirementStars ?? 0);
+
+        return (
+          <LessonModal
+            lesson={activeLesson}
+            actionLabel={
+              lessonWorldUnlocked
+                ? 'Entès · Passar a l’Acció'
+                : 'Entès · Tornar al Mapa'
             }
-          }}
-        />
-      )}
+            onClose={() => {
+              setActiveLesson(null);
+              setPendingStageAfterLesson(null);
+            }}
+            onComplete={() => {
+              markLessonCompleted(activeLesson.worldId);
+              if (pendingStageAfterLesson && lessonWorldUnlocked) {
+                startCampaignStage(pendingStageAfterLesson);
+              } else if (lessonWorldUnlocked) {
+                const firstStage = CAMPAIGN_SCENARIOS.find(
+                  (s) =>
+                    s.worldId === activeLesson.worldId &&
+                    !stageProgress[s.id]?.completed
+                );
+                if (firstStage && firstStage.id.endsWith('_s1')) {
+                  startCampaignStage(firstStage.id);
+                }
+              }
+              setPendingStageAfterLesson(null);
+            }}
+          />
+        );
+      })()}
     </div>
   );
 };

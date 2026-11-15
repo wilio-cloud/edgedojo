@@ -38,20 +38,20 @@ export function evaluateRadarAttempt(
   let isCorrect = false;
   let feedback = scenario.coachingTakeaway;
 
-  if (cfg.priceTapTarget && params.tappedPrice !== undefined) {
+  if (params.selectedChoiceId) {
+    const choice = cfg.choices.find((c) => c.id === params.selectedChoiceId);
+    if (choice) {
+      isCorrect = choice.isCorrect;
+      feedback = choice.feedback;
+    }
+  } else if (cfg.priceTapTarget && params.tappedPrice !== undefined) {
     const distAtr =
       Math.abs(params.tappedPrice - cfg.priceTapTarget.idealPrice) /
       Math.max(scenario.atr, 1e-6);
     isCorrect = distAtr <= cfg.priceTapTarget.toleranceAtr;
     feedback = isCorrect
       ? `Precisió quirúrgica (${distAtr.toFixed(2)} ATR de desviació): has localitzat exactament ${cfg.priceTapTarget.targetLabel}.`
-      : `Has tocat a ${distAtr.toFixed(1)} ATR del nivell clau (${cfg.priceTapTarget.targetLabel}). Fixa't en les metxes i punts d'estructura marcats als Raigs X.`;
-  } else if (params.selectedChoiceId) {
-    const choice = cfg.choices.find((c) => c.id === params.selectedChoiceId);
-    if (choice) {
-      isCorrect = choice.isCorrect;
-      feedback = choice.feedback;
-    }
+      : `Has tocat a ${distAtr.toFixed(1)} ATR del nivell clau (${cfg.priceTapTarget.targetLabel}). Fixa’t en les metxes i punts d’estructura marcats als Raigs X.`;
   }
 
   const base = isCorrect ? 90 : 22;
@@ -528,11 +528,12 @@ export function computeReadinessProfile(
             activeList.length
         );
 
-  // Compute max peak-to-trough equity drawdown in R
+  // Compute max peak-to-trough equity drawdown in R in chronological order
+  const chronologicalRecords = [...activeList].reverse();
   let equity = 0;
   let peak = 0;
   let maxDd = 0;
-  for (const r of activeList) {
+  for (const r of chronologicalRecords) {
     equity += r.netR;
     if (equity > peak) peak = equity;
     const dd = peak - equity;
