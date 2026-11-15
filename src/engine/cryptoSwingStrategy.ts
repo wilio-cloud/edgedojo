@@ -1,7 +1,7 @@
 import { Candle, OrderSetup, TacticalAnnotation } from './types';
 import { calculateCryptoSwingSizing } from './riskMasterEngine';
 
-export type CryptoSymbol = 'BTCUSDT' | 'ETHUSDT' | 'SOLUSDT' | 'AVAXUSDT';
+export type CryptoSymbol = 'BTCUSDT' | 'ETHUSDT';
 export type MarketRegime = 'BULLISH' | 'BEARISH' | 'RANGE';
 export type RadarSignalStatus = 'SETUP_ACTIVE' | 'PRE_ALERT' | 'NEUTRAL';
 export type SetupArchetype = 'SWEEP_RECLAIM' | 'BOS_FVG_PULLBACK';
@@ -35,24 +35,6 @@ export const SWING_UNIVERSE: AssetSpec[] = [
     okxInstId: 'ETH-USDT-SWAP',
     minSlPct: 1.6,
     maxSlPct: 7.8,
-    isLeader: false,
-  },
-  {
-    symbol: 'SOLUSDT',
-    displaySymbol: 'SOL/USDT',
-    shortName: 'SOL',
-    okxInstId: 'SOL-USDT-SWAP',
-    minSlPct: 2.0,
-    maxSlPct: 9.5,
-    isLeader: false,
-  },
-  {
-    symbol: 'AVAXUSDT',
-    displaySymbol: 'AVAX/USDT',
-    shortName: 'AVAX',
-    okxInstId: 'AVAX-USDT-SWAP',
-    minSlPct: 2.1,
-    maxSlPct: 9.8,
     isLeader: false,
   },
 ];
@@ -1477,11 +1459,11 @@ export function runHistoricalSwingBacktest(
     periodEndIso: new Date(lastTs * 1000).toISOString().slice(0, 10),
     daysCovered,
     assumptionsCa: [
+      'Univers Core Institucional: focalitzat exclusivament en BTC i ETH (eliminant la fricció i els falsos trencaments de les altcoins d’alta beta).',
       'Zero Look-Ahead: les espelmes 4H i 1D només es llegeixen un cop tancades completament.',
-      'Execució diferenciada per liquiditat: BTC opera Mercat + Límit; Altcoins (ETH, SOL, AVAX) exigeixen sempre impuls > 2,05x ATR1H i entrada estricta amb Ordre Límit (retrocés del 30% del cos, validesa 6h).',
+      'Execució diferenciada per liquiditat: BTC opera Mercat + Límit; ETH exigeix sempre impuls > 2,05x ATR1H i entrada estricta amb Ordre Límit (retrocés del 30% del cos, validesa 6h).',
       'Regla conservadora SL-First: si una mateixa vela d’1H toca SL i TP alhora, es computa Stop Loss.',
       'Fricció inclosa (~0,10% comissió round-trip) i gestió sistemàtica: 50% cobrat a TP1 (+1.5R) + SL mogut a Break-Even, i 50% deixat córrer fins a TP2.',
-      'Sostre de correlació de cartera (Mòdul 6): màxim 2 operacions simultànies en la mateixa direcció entre BTC, ETH, SOL i AVAX.',
     ],
     totalSignalsGenerated,
     limitUnfilledExpired,

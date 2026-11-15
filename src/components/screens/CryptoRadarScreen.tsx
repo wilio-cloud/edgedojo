@@ -290,8 +290,8 @@ export const CryptoRadarScreen: React.FC = () => {
                 Radar Crypto Swing 24/7
               </h1>
               <p className="text-[11px] text-slate-400 leading-snug mt-0.5">
-                Escàner institucional sobre espelmes tancades <code className="text-slate-200">1D/4H → 1H</code> per a{' '}
-                <span className="text-slate-200 font-semibold">BTC, ETH, SOL i AVAX</span>.
+                Escàner institucional sobre espelmes tancades <code className="text-slate-200">1D/4H → 1H</code> focalitzat en{' '}
+                <span className="text-slate-200 font-semibold">BTC i ETH</span>.
               </p>
             </div>
 
@@ -774,6 +774,15 @@ export const CryptoRadarScreen: React.FC = () => {
                       </strong>
                     </div>
                   </div>
+                  {displayedSetup.side === 'SHORT' ? (
+                    <p className="mt-2 pt-2 border-t border-slate-800/80 text-[10px] text-amber-300/95 leading-snug">
+                      💡 <strong>Si operes només en Spot:</strong> omet aquest senyal Short i mantén el capital protegit en <code>USDT</code> (o executa’l amb Futurs Perps Aïllat <code>&lt;= 2x</code>).
+                    </p>
+                  ) : personalSizing.positionSizeUsdt > riskSettings.cryptoCapitalUsdt ? (
+                    <p className="mt-2 pt-2 border-t border-slate-800/80 text-[10px] text-cyan-300/95 leading-snug">
+                      💡 <strong>Nota Spot 1x ({riskSettings.cryptoCapitalUsdt} USDT):</strong> com que l’SL és estret (<code>{displayedSetup.slDistancePct}%</code>), comprant amb el 100% de la teva caixa Spot (<code>{riskSettings.cryptoCapitalUsdt} USDT</code>) el teu risc real baixa sol a <strong>-{Math.round(riskSettings.cryptoCapitalUsdt * (displayedSetup.slDistancePct / 100) * 100) / 100} USDT ({displayedSetup.slDistancePct}%)</strong> amb zero liquidació. Per clavar el {riskSettings.cryptoRiskPct}% exacte cal Perps Aïllat <code>2x</code>.
+                    </p>
+                  ) : null}
                 </div>
 
                 {/* Confluences */}
@@ -1098,7 +1107,7 @@ export const CryptoRadarScreen: React.FC = () => {
                   Pas 3 · Envia un Ping de Prova Immediat al Mòbil
                 </span>
                 <p className="text-[11px] text-slate-300 leading-snug">
-                  Obre la pestanya <strong>Actions</strong>, selecciona <em>EdgeDojo Crypto Swing Radar (24/7 Discord Bot)</em>, prem <strong>Run workflow</strong> i activa la casella <code className="text-amber-300">send_test_ping = true</code>. Rebràs a l’instant l’informe en viu de BTC, ETH, SOL i AVAX al teu Discord!
+                  Obre la pestanya <strong>Actions</strong>, selecciona <em>EdgeDojo Crypto Swing Radar (24/7 Discord Bot)</em>, prem <strong>Run workflow</strong> i activa la casella <code className="text-amber-300">send_test_ping = true</code>. Rebràs a l’instant l’informe en viu de BTC i ETH al teu Discord!
                 </p>
                 <a
                   href="https://github.com/wilio-cloud/edgedojo/actions"

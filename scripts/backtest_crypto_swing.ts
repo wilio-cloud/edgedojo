@@ -62,7 +62,7 @@ async function main() {
   const endTimeMs = Date.now();
 
   console.log(
-    `📊 Descarregant ~${days} dies d'històric real de Binance Vision (1D / 4H / 1H) per a BTC, ETH, SOL i AVAX...`
+    `📊 Descarregant ~${days} dies d'històric real de Binance Vision (1D / 4H / 1H) per a BTC i ETH...`
   );
 
   const datasets: HistoricalAssetCandles[] = [];
@@ -75,19 +75,20 @@ async function main() {
         const cached = JSON.parse(
           await fs.readFile(CACHE_PATH, 'utf-8')
         ) as HistoricalAssetCandles[];
-        if (
-          Array.isArray(cached) &&
-          cached.length === SWING_UNIVERSE.length &&
-          cached[0].candles1h.length >= bars1h - 24
-        ) {
-          datasets.push(
-            ...cached.map((d) => ({
-              ...d,
-              spec: SWING_UNIVERSE.find((s) => s.symbol === d.spec.symbol) ?? d.spec,
-            }))
-          );
-          loadedFromCache = true;
-          console.log('⚡ Usant cau local recent (.scanner_state/backtest_klines_cache.json)');
+        if (Array.isArray(cached)) {
+          const matching = SWING_UNIVERSE.map((spec) => {
+            const found = cached.find((d) => d.spec.symbol === spec.symbol);
+            return found ? { ...found, spec } : null;
+          }).filter((d): d is HistoricalAssetCandles => d !== null);
+
+          if (
+            matching.length === SWING_UNIVERSE.length &&
+            matching[0].candles1h.length >= bars1h - 24
+          ) {
+            datasets.push(...matching);
+            loadedFromCache = true;
+            console.log('⚡ Usant cau local recent (.scanner_state/backtest_klines_cache.json)');
+          }
         }
       }
     } catch {

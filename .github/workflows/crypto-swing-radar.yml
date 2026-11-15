@@ -14,12 +14,12 @@ on:
       alert_capital_usdt:
         description: 'Capital de referència en USDT per calcular la mida de posició a l’alerta'
         required: false
-        default: '5000'
+        default: '1000'
         type: string
       alert_risk_pct:
-        description: 'Percentatge de risc 1R per operació (ex. 1.0 = 1%)'
+        description: 'Percentatge de risc 1R per operació (ex. 2.0 = 2%)'
         required: false
-        default: '1.0'
+        default: '2.0'
         type: string
 
 permissions:
@@ -55,12 +55,12 @@ jobs:
           restore-keys: |
             swing-alerts-
 
-      - name: Run Quantitative Crypto Swing Scanner (BTC · ETH · SOL · AVAX)
+      - name: Run Quantitative Crypto Swing Scanner (BTC · ETH)
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           SEND_TEST_PING: ${{ inputs.send_test_ping == true && 'true' || 'false' }}
-          ALERT_CAPITAL_USDT: ${{ inputs.alert_capital_usdt || vars.ALERT_CAPITAL_USDT || '5000' }}
-          ALERT_RISK_PCT: ${{ inputs.alert_risk_pct || vars.ALERT_RISK_PCT || '1.0' }}
+          ALERT_CAPITAL_USDT: ${{ inputs.alert_capital_usdt || vars.ALERT_CAPITAL_USDT || '1000' }}
+          ALERT_RISK_PCT: ${{ inputs.alert_risk_pct || vars.ALERT_RISK_PCT || '2.0' }}
         run: npx tsx scripts/run_swing_scanner.ts
 
       - name: Save Updated Anti-Duplicate Alert State

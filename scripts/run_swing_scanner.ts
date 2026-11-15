@@ -164,9 +164,12 @@ export function buildSetupDiscordEmbed(params: {
       {
         name: `📐 Mida Exacta (${riskPct}% de ${capitalUsdt} USDT)`,
         value:
-          `• Posició total: **\`${Math.round(sizing.positionSizeUsdt)} USDT\`** (\`${sizing.coinUnits} ${result.spec.shortName}\`)\n` +
-          `• Risc màxim si salta SL (1R): \`-${sizing.maxRiskUsdt} USDT\`\n` +
-          `• Benefici net a TP2 complet: \`+${Math.round(sizing.netProfitAtTpUsdt)} USDT\``,
+          `• Posició òptima (Perps <= 2x): **\`${Math.round(sizing.positionSizeUsdt)} USDT\`** (\`${sizing.coinUnits} ${result.spec.shortName}\`) → Risc 1R: \`-${sizing.maxRiskUsdt} USDT\` | TP2: \`+${Math.round(sizing.netProfitAtTpUsdt)} USDT\`\n` +
+          (s.side === 'SHORT'
+            ? `• Mode **Spot pur**: ometre senyal (mantenir caixa en \`USDT\`) o executar en Perps Aïllat \`2x\`.`
+            : sizing.positionSizeUsdt > capitalUsdt
+              ? `• Mode **Spot pur (màx 1x = ${capitalUsdt} USDT)**: entra amb \`${capitalUsdt} USDT\` → risc real natural \`-${Math.round(capitalUsdt * (s.slDistancePct / 100) * 100) / 100} USDT (${s.slDistancePct}%)\` i zero liquidació.`
+              : `• Mode **Spot pur**: entra directament amb \`${Math.round(sizing.positionSizeUsdt)} USDT\` en Spot (sobra caixa lliure).`),
         inline: false,
       },
       {
@@ -255,7 +258,7 @@ export function buildTestPingDiscordEmbed(params: {
     color: 0x06b6d4,
     fields: [
       {
-        name: '📊 Estat en Temps Real (BTC · ETH · SOL · AVAX)',
+        name: '📊 Estat en Temps Real (BTC · ETH)',
         value: statusLines.join('\n'),
         inline: false,
       },
@@ -299,10 +302,10 @@ async function main() {
     args.has('--test-ping') || process.env.SEND_TEST_PING === 'true';
 
   const webhookUrl = (process.env.DISCORD_WEBHOOK_URL ?? '').trim();
-  const capitalUsdt = Number(process.env.ALERT_CAPITAL_USDT ?? '5000');
-  const riskPct = Number(process.env.ALERT_RISK_PCT ?? '1.0');
+  const capitalUsdt = Number(process.env.ALERT_CAPITAL_USDT ?? '1000');
+  const riskPct = Number(process.env.ALERT_RISK_PCT ?? '2.0');
 
-  console.log('📡 Escanejant mercat Crypto Swing en viu (BTC, ETH, SOL, AVAX)...');
+  console.log('📡 Escanejant mercat Crypto Swing en viu (BTC i ETH)...');
   const snapshot = await scanAllSwingAssetsLive();
   const nowMs = snapshot.scannedAtMs;
 

@@ -266,11 +266,11 @@ describe('cryptoSwingStrategy — Quantitative Swing Engine', () => {
   it('validates the audited 365-day historical walk-forward backtest report metrics', () => {
     const report = backtestReportJson as unknown as SwingBacktestReport;
     expect(report.daysCovered).toBeGreaterThanOrEqual(350);
-    expect(report.totalFilledTrades).toBeGreaterThanOrEqual(35);
-    expect(report.expectancyR).toBeGreaterThan(0.15);
-    expect(report.profitFactor).toBeGreaterThan(1.3);
+    expect(report.totalFilledTrades).toBeGreaterThanOrEqual(20);
+    expect(report.expectancyR).toBeGreaterThan(0.25);
+    expect(report.profitFactor).toBeGreaterThan(1.5);
     expect(report.netTotalR).toBeGreaterThan(8);
-    expect(report.byAsset).toHaveLength(4);
+    expect(report.byAsset).toHaveLength(2);
 
     // Also smoke-test runHistoricalSwingBacktest on minimal synthetic input
     const miniDatasets = SWING_UNIVERSE.map((spec) => ({
@@ -301,6 +301,6 @@ describe('cryptoSwingStrategy — Quantitative Swing Engine', () => {
       }),
     }));
     const miniReport = runHistoricalSwingBacktest(miniDatasets);
-    expect(miniReport.byAsset).toHaveLength(4);
+    expect(miniReport.byAsset).toHaveLength(2);
   });
 });
