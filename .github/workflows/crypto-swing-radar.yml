@@ -1,0 +1,71 @@
+name: EdgeDojo Crypto Swing Radar (24/7 Discord Bot)
+
+on:
+  schedule:
+    # Runs every hour at minute :02 UTC (right after the 1H & 4H candle closes)
+    - cron: '2 * * * *'
+  workflow_dispatch:
+    inputs:
+      send_test_ping:
+        description: 'Envia una notificació de prova immediata al teu Discord per verificar la connexió'
+        required: false
+        default: false
+        type: boolean
+      alert_capital_usdt:
+        description: 'Capital de referència en USDT per calcular la mida de posició a l’alerta'
+        required: false
+        default: '5000'
+        type: string
+      alert_risk_pct:
+        description: 'Percentatge de risc 1R per operació (ex. 1.0 = 1%)'
+        required: false
+        default: '1.0'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: crypto-swing-radar-scanner
+  cancel-in-progress: false
+
+jobs:
+  scan-and-notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout EdgeDojo Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Restore Anti-Duplicate Alert State
+        uses: actions/cache/restore@v4
+        with:
+          path: .scanner_state/sent_alerts.json
+          key: swing-alerts-${{ github.run_id }}
+          restore-keys: |
+            swing-alerts-
+
+      - name: Run Quantitative Crypto Swing Scanner (BTC · ETH · SOL · AVAX)
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          SEND_TEST_PING: ${{ inputs.send_test_ping == true && 'true' || 'false' }}
+          ALERT_CAPITAL_USDT: ${{ inputs.alert_capital_usdt || vars.ALERT_CAPITAL_USDT || '5000' }}
+          ALERT_RISK_PCT: ${{ inputs.alert_risk_pct || vars.ALERT_RISK_PCT || '1.0' }}
+        run: npx tsx scripts/run_swing_scanner.ts
+
+      - name: Save Updated Anti-Duplicate Alert State
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .scanner_state/sent_alerts.json
+          key: swing-alerts-${{ github.run_id }}

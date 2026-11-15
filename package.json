@@ -9,7 +9,11 @@
     "build:gh": "GITHUB_PAGES=true tsc -b && GITHUB_PAGES=true vite build && touch dist/.nojekyll && cp dist/index.html dist/404.html",
     "deploy": "bash scripts/deploy_gh_pages.sh",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "radar:scan": "tsx scripts/run_swing_scanner.ts",
+    "radar:dry-run": "tsx scripts/run_swing_scanner.ts --dry-run",
+    "radar:test-ping": "tsx scripts/run_swing_scanner.ts --test-ping",
+    "radar:backtest": "tsx scripts/backtest_crypto_swing.ts"
   },
   "dependencies": {
     "canvas-confetti": "^1.9.3",
@@ -27,6 +31,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "playwright-core": "^1.65.1",
     "tailwindcss": "^4.0.6",
+    "tsx": "^4.23.15",
     "typescript": "~5.7.3",
     "vite": "^6.1.0",
     "vite-plugin-pwa": "^0.21.1",

@@ -19,7 +19,13 @@ export interface UserRiskSettings {
   cryptoRiskPct: number;
 }
 
-export type ActiveTab = 'CAMPAIGN' | 'GYM' | 'RISK_MASTER' | 'PASSPORT' | 'PLAYING';
+export type ActiveTab =
+  | 'CAMPAIGN'
+  | 'GYM'
+  | 'CRYPTO_RADAR'
+  | 'RISK_MASTER'
+  | 'PASSPORT'
+  | 'PLAYING';
 
 interface GameState {
   activeTab: ActiveTab;

@@ -86,15 +86,55 @@ async function main() {
   // 5. Return & check Drill Gym (MNQ + Crypto)
   await page.getByRole('button', { name: 'Tornar' }).click();
   await page.waitForTimeout(300);
-  await page.getByRole('button', { name: 'Gimnàs Real' }).click();
+  await page.getByRole('button', { name: 'Gimnàs', exact: true }).click();
   await page.waitForTimeout(300);
   await page.screenshot({
     path: path.join(ARTIFACT_DIR, '06_drill_gym.png'),
   });
   console.log('[OK] Captured 06_drill_gym.png');
 
-  // 6. Verify NEW Risk Master & Scaling Module (all 4 sub-tabs!)
-  await page.getByRole('button', { name: 'Risc & Escalat' }).click();
+  // 5B. Verify NEW Crypto Swing Radar Live Tab (Live Feed + TacticalChart + Backtest + Discord Guide)
+  await page.getByRole('button', { name: 'Radar Live', exact: true }).click();
+  await page.waitForTimeout(2600); // Allow live Binance Vision + OKX fetch & chart render
+  const demoBtn = page.getByRole('button', { name: /Veure Exemple Tiquet A\+/i });
+  if (await demoBtn.isVisible()) {
+    await demoBtn.click();
+    await page.waitForTimeout(350);
+  }
+  await page.screenshot({
+    path: path.join(ARTIFACT_DIR, '14_crypto_radar_live.png'),
+  });
+  console.log('[OK] Captured 14_crypto_radar_live.png');
+
+  await page.getByRole('button', { name: '4H', exact: true }).click();
+  await page.waitForTimeout(250);
+  await page.getByRole('button', { name: /ETH\/USDT/i }).click();
+  await page.waitForTimeout(300);
+
+  await page.getByRole('button', { name: 'Backtest', exact: true }).click();
+  await page.waitForTimeout(350);
+  await page.evaluate(() => {
+    document.querySelector('.overflow-y-auto')?.scrollTo(0, 0);
+  });
+  await page.waitForTimeout(150);
+  await page.screenshot({
+    path: path.join(ARTIFACT_DIR, '15_crypto_radar_backtest.png'),
+  });
+  console.log('[OK] Captured 15_crypto_radar_backtest.png');
+
+  await page.getByRole('button', { name: 'Discord', exact: true }).click();
+  await page.waitForTimeout(300);
+  await page.evaluate(() => {
+    document.querySelector('.overflow-y-auto')?.scrollTo(0, 0);
+  });
+  await page.waitForTimeout(150);
+  await page.screenshot({
+    path: path.join(ARTIFACT_DIR, '16_crypto_radar_discord.png'),
+  });
+  console.log('[OK] Captured 16_crypto_radar_discord.png');
+
+  // 6. Verify Risk Master & Scaling Module (all 4 sub-tabs!)
+  await page.getByRole('button', { name: 'Risc %', exact: true }).click();
   await page.waitForTimeout(350);
   await page.screenshot({
     path: path.join(ARTIFACT_DIR, '09_risk_master_doctrine.png'),
@@ -123,7 +163,7 @@ async function main() {
   console.log('[OK] Captured 12_risk_scaling_simulator.png');
 
   // 7. Verify Readiness Passport & Checklist
-  await page.getByRole('button', { name: 'Passaport Pro' }).click();
+  await page.getByRole('button', { name: 'Passaport', exact: true }).click();
   await page.waitForTimeout(350);
   await page.screenshot({
     path: path.join(ARTIFACT_DIR, '07_readiness_passport.png'),
