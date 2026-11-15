@@ -856,7 +856,7 @@ export const CryptoRadarScreen: React.FC = () => {
                     {BACKTEST_REPORT.daysCovered} Dies d’Històric Real ({BACKTEST_REPORT.periodStartIso} → {BACKTEST_REPORT.periodEndIso})
                   </h2>
                   <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">
-                    Validat durant un mercat cripto exigent (on Buy & Hold va caure un -42% en BTC i -71% en AVAX), incloent comissions del 0,10% i regla conservadora SL-First.
+                    Validat durant un any baixista exigent (on Buy & Hold va caure un -31,4% en BTC i -52,3% en AVAX; -43,4% de mitjana), incloent comissions del 0,10% i regla conservadora SL-First.
                   </p>
                 </div>
               </div>

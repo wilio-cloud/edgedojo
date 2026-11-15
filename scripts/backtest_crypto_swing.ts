@@ -56,9 +56,9 @@ async function fetchPaginatedKlines(params: {
 
 async function main() {
   const days = Number(process.env.BACKTEST_DAYS ?? '365');
-  const bars1h = days * 24 + 160; // Warm-up buffer included
-  const bars4h = Math.ceil(bars1h / 4) + 80;
-  const bars1d = days + 75;
+  const bars1h = days * 24 + 500; // Exact 500-bar warm-up buffer before active 365-day window
+  const bars4h = Math.ceil(bars1h / 4) + 120;
+  const bars1d = days + 95;
   const endTimeMs = Date.now();
 
   console.log(
@@ -75,8 +75,17 @@ async function main() {
         const cached = JSON.parse(
           await fs.readFile(CACHE_PATH, 'utf-8')
         ) as HistoricalAssetCandles[];
-        if (Array.isArray(cached) && cached.length === SWING_UNIVERSE.length) {
-          datasets.push(...cached);
+        if (
+          Array.isArray(cached) &&
+          cached.length === SWING_UNIVERSE.length &&
+          cached[0].candles1h.length >= bars1h - 24
+        ) {
+          datasets.push(
+            ...cached.map((d) => ({
+              ...d,
+              spec: SWING_UNIVERSE.find((s) => s.symbol === d.spec.symbol) ?? d.spec,
+            }))
+          );
           loadedFromCache = true;
           console.log('⚡ Usant cau local recent (.scanner_state/backtest_klines_cache.json)');
         }

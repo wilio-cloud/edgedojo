@@ -24,7 +24,7 @@ export const SWING_UNIVERSE: AssetSpec[] = [
     displaySymbol: 'BTC/USDT',
     shortName: 'BTC',
     okxInstId: 'BTC-USDT-SWAP',
-    minSlPct: 1.25,
+    minSlPct: 1.35,
     maxSlPct: 6.5,
     isLeader: true,
   },
@@ -33,7 +33,7 @@ export const SWING_UNIVERSE: AssetSpec[] = [
     displaySymbol: 'ETH/USDT',
     shortName: 'ETH',
     okxInstId: 'ETH-USDT-SWAP',
-    minSlPct: 1.5,
+    minSlPct: 1.6,
     maxSlPct: 7.8,
     isLeader: false,
   },
@@ -42,7 +42,7 @@ export const SWING_UNIVERSE: AssetSpec[] = [
     displaySymbol: 'SOL/USDT',
     shortName: 'SOL',
     okxInstId: 'SOL-USDT-SWAP',
-    minSlPct: 1.85,
+    minSlPct: 2.0,
     maxSlPct: 9.5,
     isLeader: false,
   },
@@ -51,7 +51,7 @@ export const SWING_UNIVERSE: AssetSpec[] = [
     displaySymbol: 'AVAX/USDT',
     shortName: 'AVAX',
     okxInstId: 'AVAX-USDT-SWAP',
-    minSlPct: 1.95,
+    minSlPct: 2.1,
     maxSlPct: 9.8,
     isLeader: false,
   },
@@ -1235,7 +1235,7 @@ export function runHistoricalSwingBacktest(
     let cooldownUntilIdx = startIdx;
     const seenSetupIds = new Set<string>();
 
-    for (let i = startIdx; i < c1h.length - 96; i++) {
+    for (let i = startIdx; i < c1h.length - 2; i++) {
       if (i < cooldownUntilIdx) continue;
 
       const decisionEndSec = c1h[i].time + 3600;
@@ -1354,6 +1354,11 @@ export function runHistoricalSwingBacktest(
       }
 
       if (outcome === 'TIME_EXIT') {
+        if (fillIdx + 120 >= c1h.length) {
+          // Trade opened near the very end of the dataset and has not yet resolved or reached 120h
+          cooldownUntilIdx = c1h.length;
+          continue;
+        }
         const lastBar = c1h[exitIdx];
         const riskDist = Math.abs(s.entry - s.stopLoss);
         const dir = s.side === 'LONG' ? 1 : -1;
@@ -1456,7 +1461,8 @@ export function runHistoricalSwingBacktest(
     };
   });
 
-  const firstTs = btcData.candles1h[0]?.time ?? 0;
+  const activeStartIdx = Math.min(500, Math.floor(btcData.candles1h.length * 0.25));
+  const firstTs = btcData.candles1h[activeStartIdx]?.time ?? btcData.candles1h[0]?.time ?? 0;
   const lastTs = btcData.candles1h[btcData.candles1h.length - 1]?.time ?? 0;
   const daysCovered = Math.max(1, Math.round((lastTs - firstTs) / 86400));
 
