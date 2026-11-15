@@ -706,6 +706,11 @@ export function analyzeAssetSwingSetup(params: {
     // Reject overly stretched climax candles (> 2.85x ATR1H) rather than chasing
     if (extensionAtr > 2.85) return null;
 
+    // Empirical 3-Year Institutional Rule:
+    // Only Market Leader (BTC) has deep enough liquidity to execute compact 1H closes at MARKET;
+    // Altcoins (ETH, SOL, AVAX) require decisive 1H displacement (> 2.05x ATR1H) and enter strictly via LIMIT_PULLBACK.
+    if (!spec.isLeader && extensionAtr <= 2.05) return null;
+
     let executionType: ExecutionOrderType = 'MARKET';
     let entry = marketEntry;
     let limitValidHours: number | undefined;
@@ -1473,6 +1478,7 @@ export function runHistoricalSwingBacktest(
     daysCovered,
     assumptionsCa: [
       'Zero Look-Ahead: les espelmes 4H i 1D només es llegeixen un cop tancades completament.',
+      'Execució diferenciada per liquiditat: BTC opera Mercat + Límit; Altcoins (ETH, SOL, AVAX) exigeixen sempre impuls > 2,05x ATR1H i entrada estricta amb Ordre Límit (retrocés del 30% del cos, validesa 6h).',
       'Regla conservadora SL-First: si una mateixa vela d’1H toca SL i TP alhora, es computa Stop Loss.',
       'Fricció inclosa (~0,10% comissió round-trip) i gestió sistemàtica: 50% cobrat a TP1 (+1.5R) + SL mogut a Break-Even, i 50% deixat córrer fins a TP2.',
       'Sostre de correlació de cartera (Mòdul 6): màxim 2 operacions simultànies en la mateixa direcció entre BTC, ETH, SOL i AVAX.',

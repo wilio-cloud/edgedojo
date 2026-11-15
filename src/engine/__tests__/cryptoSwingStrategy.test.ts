@@ -130,8 +130,15 @@ describe('cryptoSwingStrategy — Quantitative Swing Engine', () => {
     expect(squeezeLong.maxSafeLeverage).toBeLessThanOrEqual(3);
   });
 
-  it('detects a valid Pro-Tide 4H Pullback + 1H CHoCH setup and distinguishes MARKET vs LIMIT_PULLBACK', () => {
+  it('detects a valid Pro-Tide 4H Pullback + 1H CHoCH setup, enforces Altcoin LIMIT_PULLBACK-only rule, and allows MARKET + LIMIT on BTC', () => {
     const ethSpec = SWING_UNIVERSE.find((s) => s.symbol === 'ETHUSDT')!;
+    const leaderSyntheticSpec = {
+      ...ethSpec,
+      symbol: 'BTCUSDT' as const,
+      shortLabel: 'BTC',
+      isLeader: true,
+      minSlPct: 1.35,
+    };
     const closed1d = generateSyntheticTrendCandles({
       count: 70,
       startTimeSec: 1_700_000_000,
@@ -173,7 +180,7 @@ describe('cryptoSwingStrategy — Quantitative Swing Engine', () => {
       });
     });
 
-    // Build 100 1H bars with ATR(1H) ~ 38$, tapping 3304 (inside EMA21/50 4H) and closing CHoCH at 3356 (~1.8x ATR1H = MARKET)
+    // Build 100 1H bars with ATR(1H) ~ 38$, tapping 3304 (inside EMA21/50 4H) and closing CHoCH at 3356 (~1.8x ATR1H = compact close)
     const closed1h: Candle[] = [];
     for (let i = 0; i < 97; i++) {
       const base = 3380 - (i > 75 ? (i - 75) * 3 : 0);
@@ -204,8 +211,9 @@ describe('cryptoSwingStrategy — Quantitative Swing Engine', () => {
       summaryCa: 'BTC Alcista',
     };
 
-    const marketScan = analyzeAssetSwingSetup({
-      spec: ethSpec,
+    // 1) Market Leader (BTC) executes compact 1H triggers at MARKET
+    const btcMarketScan = analyzeAssetSwingSetup({
+      spec: leaderSyntheticSpec,
       closed1d,
       closed4h,
       closed1h,
@@ -213,13 +221,24 @@ describe('cryptoSwingStrategy — Quantitative Swing Engine', () => {
       leaderContext: bullBtcLeader,
     });
 
-    expect(marketScan.status).toBe('SETUP_ACTIVE');
-    expect(marketScan.setup).not.toBeNull();
-    expect(marketScan.setup?.side).toBe('LONG');
-    expect(marketScan.setup?.netRR).toBeGreaterThanOrEqual(2.0);
-    expect(marketScan.setup?.executionType).toBe('MARKET');
+    expect(btcMarketScan.status).toBe('SETUP_ACTIVE');
+    expect(btcMarketScan.setup).not.toBeNull();
+    expect(btcMarketScan.setup?.side).toBe('LONG');
+    expect(btcMarketScan.setup?.netRR).toBeGreaterThanOrEqual(2.0);
+    expect(btcMarketScan.setup?.executionType).toBe('MARKET');
 
-    // Now stretch the final 1H candle (> 2.05x ATR1H from SL) and verify it switches to LIMIT_PULLBACK!
+    // 2) Altcoins (ETH) strictly block compact MARKET entries (waiting for > 2.05x ATR displacement + Limit retrace)
+    const ethBlockedMarketScan = analyzeAssetSwingSetup({
+      spec: ethSpec,
+      closed1d,
+      closed4h,
+      closed1h,
+      fundingRate8h: 0.0001,
+      leaderContext: bullBtcLeader,
+    });
+    expect(ethBlockedMarketScan.setup).toBeNull();
+
+    // 3) Stretch the final 1H candle (> 2.05x ATR1H from SL) and verify ETH triggers LIMIT_PULLBACK!
     const stretched1h = [...closed1h.slice(0, -1)];
     stretched1h.push({
       time: 1_706_000_000 + 99 * 3600,

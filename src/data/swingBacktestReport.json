@@ -1,24 +1,25 @@
 {
-  "generatedAt": "2026-11-15T19:33:33.023Z",
+  "generatedAt": "2026-11-15T19:58:03.673Z",
   "periodStartIso": "2025-11-15",
   "periodEndIso": "2026-11-15",
   "daysCovered": 365,
   "assumptionsCa": [
     "Zero Look-Ahead: les espelmes 4H i 1D només es llegeixen un cop tancades completament.",
+    "Execució diferenciada per liquiditat: BTC opera Mercat + Límit; Altcoins (ETH, SOL, AVAX) exigeixen sempre impuls > 2,05x ATR1H i entrada estricta amb Ordre Límit (retrocés del 30% del cos, validesa 6h).",
     "Regla conservadora SL-First: si una mateixa vela d’1H toca SL i TP alhora, es computa Stop Loss.",
     "Fricció inclosa (~0,10% comissió round-trip) i gestió sistemàtica: 50% cobrat a TP1 (+1.5R) + SL mogut a Break-Even, i 50% deixat córrer fins a TP2.",
     "Sostre de correlació de cartera (Mòdul 6): màxim 2 operacions simultànies en la mateixa direcció entre BTC, ETH, SOL i AVAX."
   ],
-  "totalSignalsGenerated": 61,
+  "totalSignalsGenerated": 45,
   "limitUnfilledExpired": 4,
-  "totalFilledTrades": 56,
-  "winRatePct": 48.2,
-  "tp1HitRatePct": 44.6,
-  "avgWinR": 1.68,
+  "totalFilledTrades": 41,
+  "winRatePct": 51.2,
+  "tp1HitRatePct": 46.3,
+  "avgWinR": 1.82,
   "avgLossR": -1.04,
-  "expectancyR": 0.27,
-  "profitFactor": 1.51,
-  "netTotalR": 15.24,
+  "expectancyR": 0.43,
+  "profitFactor": 1.84,
+  "netTotalR": 17.51,
   "maxDrawdownR": 5.53,
   "equityCurveR": [
     {
@@ -26,11 +27,11 @@
       "cumR": 2.21
     },
     {
-      "time": 1764108000,
+      "time": 1764090000,
       "cumR": 1.17
     },
     {
-      "time": 1764118800,
+      "time": 1764108000,
       "cumR": 0.13
     },
     {
@@ -38,212 +39,152 @@
       "cumR": -0.91
     },
     {
-      "time": 1764176400,
-      "cumR": -1.95
-    },
-    {
       "time": 1765296000,
-      "cumR": 0.04
+      "cumR": 1.08
     },
     {
       "time": 1765551600,
-      "cumR": 0.75
+      "cumR": 1.79
     },
     {
       "time": 1766448000,
-      "cumR": -0.29
+      "cumR": 0.75
     },
     {
       "time": 1766678400,
-      "cumR": -1.33
+      "cumR": -0.29
     },
     {
-      "time": 1766714400,
-      "cumR": -0.62
-    },
-    {
-      "time": 1767880800,
-      "cumR": -1.66
-    },
-    {
-      "time": 1768320000,
-      "cumR": -0.31
+      "time": 1768323600,
+      "cumR": 0.54
     },
     {
       "time": 1768327200,
-      "cumR": 1.13
+      "cumR": 1.98
     },
     {
       "time": 1769695200,
-      "cumR": 3.25
+      "cumR": 4.1
     },
     {
       "time": 1769698800,
-      "cumR": 5.46
+      "cumR": 6.31
     },
     {
       "time": 1771243200,
-      "cumR": 4.42
-    },
-    {
-      "time": 1771246800,
-      "cumR": 3.38
+      "cumR": 5.27
     },
     {
       "time": 1771506000,
-      "cumR": 5.59
+      "cumR": 7.48
     },
     {
       "time": 1771506000,
-      "cumR": 7.8
+      "cumR": 9.69
     },
     {
       "time": 1772020800,
-      "cumR": 6.76
+      "cumR": 8.65
     },
     {
       "time": 1772463600,
-      "cumR": 5.72
+      "cumR": 7.61
     },
     {
       "time": 1772463600,
-      "cumR": 4.68
+      "cumR": 6.57
     },
     {
       "time": 1773151200,
-      "cumR": 6.89
-    },
-    {
-      "time": 1773176400,
-      "cumR": 7.6
-    },
-    {
-      "time": 1773219600,
-      "cumR": 6.56
-    },
-    {
-      "time": 1773327600,
-      "cumR": 7.27
+      "cumR": 8.78
     },
     {
       "time": 1773406800,
-      "cumR": 9.48
-    },
-    {
-      "time": 1773864000,
-      "cumR": 8.44
-    },
-    {
-      "time": 1773903600,
-      "cumR": 7.4
+      "cumR": 10.99
     },
     {
       "time": 1774360800,
-      "cumR": 6.36
+      "cumR": 9.95
     },
     {
       "time": 1774605600,
-      "cumR": 8.57
+      "cumR": 12.16
     },
     {
       "time": 1775599200,
-      "cumR": 10.51
+      "cumR": 14.1
     },
     {
       "time": 1776870000,
-      "cumR": 12.45
-    },
-    {
-      "time": 1776934800,
-      "cumR": 13.16
+      "cumR": 16.04
     },
     {
       "time": 1779937200,
-      "cumR": 15.08
+      "cumR": 17.96
     },
     {
       "time": 1781272800,
-      "cumR": 14.04
-    },
-    {
-      "time": 1781362800,
-      "cumR": 13
-    },
-    {
-      "time": 1781470800,
-      "cumR": 11.96
-    },
-    {
-      "time": 1781794800,
-      "cumR": 10.92
-    },
-    {
-      "time": 1781794800,
-      "cumR": 12.71
-    },
-    {
-      "time": 1782694800,
-      "cumR": 11.67
-    },
-    {
-      "time": 1782993600,
-      "cumR": 10.63
-    },
-    {
-      "time": 1783782000,
-      "cumR": 12.84
-    },
-    {
-      "time": 1784030400,
-      "cumR": 14.74
-    },
-    {
-      "time": 1784620800,
       "cumR": 16.92
     },
     {
-      "time": 1785502800,
+      "time": 1781470800,
       "cumR": 15.88
     },
     {
-      "time": 1787756400,
+      "time": 1782694800,
       "cumR": 14.84
     },
     {
-      "time": 1788130800,
+      "time": 1782993600,
       "cumR": 13.8
     },
     {
-      "time": 1788285600,
-      "cumR": 12.76
+      "time": 1783900800,
+      "cumR": 15.97
+    },
+    {
+      "time": 1784620800,
+      "cumR": 18.15
+    },
+    {
+      "time": 1785502800,
+      "cumR": 17.11
+    },
+    {
+      "time": 1787756400,
+      "cumR": 16.07
+    },
+    {
+      "time": 1787932800,
+      "cumR": 15.03
     },
     {
       "time": 1788285600,
-      "cumR": 11.72
+      "cumR": 13.99
+    },
+    {
+      "time": 1788285600,
+      "cumR": 12.95
     },
     {
       "time": 1790776800,
-      "cumR": 12.43
+      "cumR": 13.66
     },
     {
       "time": 1790964000,
-      "cumR": 11.39
+      "cumR": 12.62
     },
     {
       "time": 1791327600,
-      "cumR": 13.6
-    },
-    {
-      "time": 1791842400,
-      "cumR": 12.56
+      "cumR": 14.83
     },
     {
       "time": 1793707200,
-      "cumR": 13.27
+      "cumR": 15.54
     },
     {
       "time": 1794664800,
-      "cumR": 15.24
+      "cumR": 17.51
     }
   ],
   "byAsset": [
@@ -260,36 +201,36 @@
     },
     {
       "symbol": "ETHUSDT",
-      "trades": 21,
-      "wins": 10,
-      "losses": 11,
-      "winRatePct": 47.6,
-      "expectancyR": 0.15,
-      "profitFactor": 1.28,
-      "netTotalR": 3.19,
-      "maxDrawdownR": 3.78
-    },
-    {
-      "symbol": "SOLUSDT",
-      "trades": 9,
-      "wins": 4,
-      "losses": 5,
-      "winRatePct": 44.4,
-      "expectancyR": 0.37,
-      "profitFactor": 1.64,
-      "netTotalR": 3.35,
+      "trades": 13,
+      "wins": 6,
+      "losses": 7,
+      "winRatePct": 46.2,
+      "expectancyR": 0.33,
+      "profitFactor": 1.59,
+      "netTotalR": 4.26,
       "maxDrawdownR": 2.08
     },
     {
+      "symbol": "SOLUSDT",
+      "trades": 5,
+      "wins": 3,
+      "losses": 2,
+      "winRatePct": 60,
+      "expectancyR": 0.85,
+      "profitFactor": 3.05,
+      "netTotalR": 4.26,
+      "maxDrawdownR": 1.04
+    },
+    {
       "symbol": "AVAXUSDT",
-      "trades": 15,
-      "wins": 6,
-      "losses": 9,
-      "winRatePct": 40,
-      "expectancyR": 0.11,
-      "profitFactor": 1.18,
-      "netTotalR": 1.65,
-      "maxDrawdownR": 4.16
+      "trades": 12,
+      "wins": 5,
+      "losses": 7,
+      "winRatePct": 41.7,
+      "expectancyR": 0.16,
+      "profitFactor": 1.27,
+      "netTotalR": 1.94,
+      "maxDrawdownR": 5.2
     }
   ],
   "recentTrades": [
@@ -324,22 +265,6 @@
       "tp2": 8.111,
       "outcome": "TP1_THEN_BE",
       "realizedR": 0.71
-    },
-    {
-      "symbol": "AVAXUSDT",
-      "archetype": "BOS_FVG_PULLBACK",
-      "side": "LONG",
-      "executionType": "MARKET",
-      "venue": "SPOT",
-      "signalTime": 1791831600,
-      "entryTime": 1791835200,
-      "exitTime": 1791842400,
-      "entry": 10.537,
-      "stopLoss": 10.285,
-      "tp1": 10.915,
-      "tp2": 11.293,
-      "outcome": "SL_HIT",
-      "realizedR": -1.04
     },
     {
       "symbol": "AVAXUSDT",
@@ -393,15 +318,15 @@
       "symbol": "ETHUSDT",
       "archetype": "BOS_FVG_PULLBACK",
       "side": "LONG",
-      "executionType": "MARKET",
+      "executionType": "LIMIT_PULLBACK",
       "venue": "SPOT",
-      "signalTime": 1788152400,
-      "entryTime": 1788156000,
+      "signalTime": 1788184800,
+      "entryTime": 1788188400,
       "exitTime": 1788285600,
-      "entry": 2435.99,
-      "stopLoss": 2394.23,
-      "tp1": 2498.63,
-      "tp2": 2561.27,
+      "entry": 2459.38,
+      "stopLoss": 2416.67,
+      "tp1": 2523.45,
+      "tp2": 2573.8,
       "outcome": "SL_HIT",
       "realizedR": -1.04
     },
@@ -423,17 +348,17 @@
     },
     {
       "symbol": "AVAXUSDT",
-      "archetype": "SWEEP_RECLAIM",
+      "archetype": "BOS_FVG_PULLBACK",
       "side": "LONG",
-      "executionType": "MARKET",
+      "executionType": "LIMIT_PULLBACK",
       "venue": "SPOT",
-      "signalTime": 1787778000,
-      "entryTime": 1787781600,
-      "exitTime": 1788130800,
-      "entry": 7.348,
-      "stopLoss": 7.175,
-      "tp1": 7.608,
-      "tp2": 7.867,
+      "signalTime": 1787785200,
+      "entryTime": 1787788800,
+      "exitTime": 1787932800,
+      "entry": 7.419,
+      "stopLoss": 7.223,
+      "tp1": 7.713,
+      "tp2": 8.007,
       "outcome": "SL_HIT",
       "realizedR": -1.04
     },
@@ -457,15 +382,15 @@
       "symbol": "ETHUSDT",
       "archetype": "SWEEP_RECLAIM",
       "side": "LONG",
-      "executionType": "MARKET",
+      "executionType": "LIMIT_PULLBACK",
       "venue": "SPOT",
-      "signalTime": 1785358800,
-      "entryTime": 1785362400,
+      "signalTime": 1785362400,
+      "entryTime": 1785366000,
       "exitTime": 1785502800,
-      "entry": 1898.38,
+      "entry": 1904.54,
       "stopLoss": 1865.54,
-      "tp1": 1947.64,
-      "tp2": 1981.24,
+      "tp1": 1963.04,
+      "tp2": 1993.37,
       "outcome": "SL_HIT",
       "realizedR": -1.04
     },
@@ -489,33 +414,17 @@
       "symbol": "ETHUSDT",
       "archetype": "BOS_FVG_PULLBACK",
       "side": "LONG",
-      "executionType": "MARKET",
+      "executionType": "LIMIT_PULLBACK",
       "venue": "SPOT",
-      "signalTime": 1783983600,
-      "entryTime": 1783987200,
-      "exitTime": 1784030400,
-      "entry": 1776.72,
-      "stopLoss": 1747.52,
-      "tp1": 1820.52,
-      "tp2": 1846,
+      "signalTime": 1783573200,
+      "entryTime": 1783576800,
+      "exitTime": 1783900800,
+      "entry": 1747.33,
+      "stopLoss": 1717.77,
+      "tp1": 1791.67,
+      "tp2": 1833.4,
       "outcome": "TP2_FULL",
-      "realizedR": 1.9
-    },
-    {
-      "symbol": "ETHUSDT",
-      "archetype": "SWEEP_RECLAIM",
-      "side": "LONG",
-      "executionType": "MARKET",
-      "venue": "SPOT",
-      "signalTime": 1783526400,
-      "entryTime": 1783530000,
-      "exitTime": 1783782000,
-      "entry": 1736.38,
-      "stopLoss": 1708.44,
-      "tp1": 1778.29,
-      "tp2": 1820.2,
-      "outcome": "TP2_FULL",
-      "realizedR": 2.21
+      "realizedR": 2.17
     },
     {
       "symbol": "BTCUSDT",
@@ -550,36 +459,68 @@
       "realizedR": -1.04
     },
     {
-      "symbol": "AVAXUSDT",
-      "archetype": "BOS_FVG_PULLBACK",
-      "side": "SHORT",
-      "executionType": "MARKET",
-      "venue": "PERPS_ISOLATED",
-      "signalTime": 1781751600,
-      "entryTime": 1781755200,
-      "exitTime": 1781794800,
-      "entry": 6.712,
-      "stopLoss": 6.868,
-      "tp1": 6.478,
-      "tp2": 6.376,
-      "outcome": "TP2_FULL",
-      "realizedR": 1.79
-    },
-    {
       "symbol": "ETHUSDT",
       "archetype": "BOS_FVG_PULLBACK",
-      "side": "LONG",
-      "executionType": "MARKET",
-      "venue": "SPOT",
-      "signalTime": 1781737200,
-      "entryTime": 1781740800,
-      "exitTime": 1781794800,
-      "entry": 1750.6,
-      "stopLoss": 1717.58,
-      "tp1": 1800.13,
-      "tp2": 1849.54,
+      "side": "SHORT",
+      "executionType": "LIMIT_PULLBACK",
+      "venue": "PERPS_ISOLATED",
+      "signalTime": 1781240400,
+      "entryTime": 1781251200,
+      "exitTime": 1781470800,
+      "entry": 1668.21,
+      "stopLoss": 1703.07,
+      "tp1": 1615.92,
+      "tp2": 1563.63,
       "outcome": "SL_HIT",
       "realizedR": -1.04
+    },
+    {
+      "symbol": "SOLUSDT",
+      "archetype": "BOS_FVG_PULLBACK",
+      "side": "SHORT",
+      "executionType": "LIMIT_PULLBACK",
+      "venue": "PERPS_ISOLATED",
+      "signalTime": 1781244000,
+      "entryTime": 1781247600,
+      "exitTime": 1781272800,
+      "entry": 66.3,
+      "stopLoss": 67.68,
+      "tp1": 64.23,
+      "tp2": 62.16,
+      "outcome": "SL_HIT",
+      "realizedR": -1.04
+    },
+    {
+      "symbol": "SOLUSDT",
+      "archetype": "BOS_FVG_PULLBACK",
+      "side": "SHORT",
+      "executionType": "LIMIT_PULLBACK",
+      "venue": "PERPS_ISOLATED",
+      "signalTime": 1779573600,
+      "entryTime": 1779580800,
+      "exitTime": 1779937200,
+      "entry": 85.95,
+      "stopLoss": 87.79,
+      "tp1": 83.19,
+      "tp2": 81.5,
+      "outcome": "TP2_FULL",
+      "realizedR": 1.92
+    },
+    {
+      "symbol": "BTCUSDT",
+      "archetype": "BOS_FVG_PULLBACK",
+      "side": "LONG",
+      "executionType": "LIMIT_PULLBACK",
+      "venue": "SPOT",
+      "signalTime": 1776704400,
+      "entryTime": 1776726000,
+      "exitTime": 1776870000,
+      "entry": 75730.32,
+      "stopLoss": 74292.4,
+      "tp1": 77887.2,
+      "tp2": 79267.08,
+      "outcome": "TP2_FULL",
+      "realizedR": 1.94
     }
   ]
 }
